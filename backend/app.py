@@ -29,8 +29,9 @@ def index():
         print("no workie")
         return jsonify({"error": "could not refresh"}), 400
 
-@app.route('/refresh-token')
+@app.route('/refresh-token', methods=["POST"])
 def refresh_token():
+    print("refresh_access_token activated")
     access_token = refresh_access_token(AUTH_URL, CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN)
     if access_token:
         print("Refreshed token success")

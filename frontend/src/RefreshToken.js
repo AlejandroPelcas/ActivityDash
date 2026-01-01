@@ -3,11 +3,14 @@ function RefreshToken() {
     const handleClick = async () => {
         console.log("Clicked Refresh Token");
         try {
-            const response = await fetch('http://localhost:5000/refresh-token', {
+            const response = await fetch(
+                "http://127.0.0.1:5000/refresh-token",
+            {
                 method: "POST",
             }
         );
-        const data = response.json();
+        const data = response;
+        console.log("Data response", data);
         console.log("Token Refreshed");
         } 
         catch (error) {
