@@ -1,4 +1,5 @@
 import './App.css';
+import CheckToken from './CheckToken';
 import GetDataButton from './getDataButton';
 import RefreshToken from './RefreshToken';
 import {useState} from 'react';
@@ -18,6 +19,7 @@ function App() {
           refreshToken={refreshToken}
           setRefreshToken={setRefreshToken} 
         />
+        <CheckToken></CheckToken>
       </header>
     </div>
   );

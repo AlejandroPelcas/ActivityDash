@@ -31,6 +31,32 @@ def index():
         print("no workie")
         return jsonify({"error": "could not refresh"}), 400
 
+@app.route('/check-token', methods=['GET'])
+def check_token():
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT access_token, refresh_token, expires_at
+        FROM token
+        ORDER BY id DESC
+        LIMIT 1
+    """)
+    row = cursor.fetchone()
+    conn.close()
+
+    if row is None:
+        return jsonify({
+            "has_token": False
+        })
+
+    return jsonify({
+        "has_token": True,
+        "access_token": row[0],
+        "refresh_token": row[1],
+        "expires_at": row[2]
+    })
+
 @app.route('/refresh-token', methods=["POST"])
 def refresh_token():
     print("refresh_access_token activated")
