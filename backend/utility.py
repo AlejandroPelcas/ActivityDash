@@ -42,7 +42,7 @@ def refresh_access_token(auth_url, client_id, client_secret, refresh_token):
     # 🔥 IMPORTANT: overwrite refresh token
     os.environ["REFRESH_TOKEN"] = data["refresh_token"]
 
-    return data["access_token"]
+    return data
 
 def activity_plot():
     data = get_time_and_distances()

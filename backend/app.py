@@ -5,8 +5,10 @@ import os
 from dotenv import load_dotenv
 from utility import refresh_access_token,activity_plot, get_time_and_distances
 import matplotlib.pyplot as plt
-from io import BytesIO
-from datetime import datetime
+from db import init_db, get_db
+
+# create the sqlite table in not exist yet
+init_db()
 
 load_dotenv()
 CLIENT_ID = os.environ['CLIENT_ID']
@@ -32,10 +34,27 @@ def index():
 @app.route('/refresh-token', methods=["POST"])
 def refresh_token():
     print("refresh_access_token activated")
-    access_token = refresh_access_token(AUTH_URL, CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN)
-    if access_token:
-        print("Refreshed token success")
-        return jsonify(access_token)
+    token_data = refresh_access_token(AUTH_URL, CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN)
+    if token_data:
+        print(f"Refreshed token success: Data = {token_data}")
+        
+        conn = get_db()
+        cursor = conn.cursor()
+
+        cursor.execute("DELETE FROM token") # keep only 1 token
+        cursor.execute("""
+            INSERT INTO token (access_token, refresh_token, expires_at)
+            VALUES (?,?,?)
+            """, (
+                token_data['access_token'],
+                token_data['refresh_token'],
+                token_data['expires_at']
+        ))
+
+        conn.commit()
+        conn.close()
+
+        return jsonify(token_data)
     else:
         print("no workie")
         return jsonify({"error": "could not refresh"}), 400

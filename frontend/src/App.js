@@ -5,13 +5,19 @@ import {useState} from 'react';
 
 function App() {
   const [refreshToken, setRefreshToken] = useState([]);
-  
+  const [runningData, setRunningData] = useState([]);
+
   return (
     <div className="App">
       <header className="App-header">
         <p>Strava Activity Tracker</p>
-        <GetDataButton />
-        <RefreshToken />
+        <GetDataButton 
+          runningData={runningData}
+          setRunningData={setRunningData}/>
+        <RefreshToken
+          refreshToken={refreshToken}
+          setRefreshToken={setRefreshToken} 
+        />
       </header>
     </div>
   );
