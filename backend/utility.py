@@ -5,6 +5,38 @@ import requests
 from datetime import datetime
 from flask import Flask, jsonify, Response
 import os
+from db import get_db
+import time
+
+def get_valid_token():
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT access_token, refresh_token, expires_at
+        FROM token
+        ORDER BY id DESC
+        LIMIT 1
+    """)
+    row = cursor.fetchone()
+    conn.close()
+
+    if row is None:
+        # No token → force refresh
+        return refresh_access_token()
+
+    access_token, refresh_token, expires_at = row
+    now = int(time.time())
+
+    # Refresh 2 minutes early
+    if expires_at - now < 120:
+        return refresh_access_token()
+
+    return {
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+        "expires_at": expires_at
+    }
 
 def get_time_and_distances(access_token):
     headers = {

@@ -3,7 +3,7 @@ from flask_cors import CORS
 import requests
 import os
 from dotenv import load_dotenv
-from utility import refresh_access_token,activity_plot, get_time_and_distances
+from utility import *
 import matplotlib.pyplot as plt
 from db import init_db, get_db
 
@@ -109,6 +109,24 @@ def activity_data():
         return jsonify(res.json()), res.status_code
 
     return jsonify(res.json())
+
+@app.route("/activities", methods=["GET"])
+def get_activities():
+    token_data = get_valid_token()
+    access_token = token_data["access_token"]
+
+    response = requests.get(
+        "https://www.strava.com/api/v3/athlete/activities",
+        headers={
+            "Authorization": f"Bearer {access_token}"
+        },
+        params={
+            "per_page": 10
+        }
+    )
+
+    response.raise_for_status()
+    return jsonify(response.json())
 
 
 if __name__ == "__main__":

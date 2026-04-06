@@ -1,5 +1,6 @@
 import './App.css';
 import CheckToken from './CheckToken';
+import GetActivities from './GetActivities';
 import GetDataButton from './getDataButton';
 import RefreshToken from './RefreshToken';
 import {useState} from 'react';
@@ -20,6 +21,8 @@ function App() {
           setRefreshToken={setRefreshToken} 
         />
         <CheckToken></CheckToken>
+        <GetActivities></GetActivities>
+        
       </header>
     </div>
   );
